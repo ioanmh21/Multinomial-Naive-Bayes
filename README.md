@@ -120,3 +120,13 @@ If you want to **collect new code files or modify the dataset**:
    python train_model.py
    ```
 After this, you can test your own code snippets using `tester.py`.
+
+## Results
+<p align="center">
+  <img height="300px" alt="class_accuracy_plot" src="https://github.com/user-attachments/assets/b14dd69c-b6a6-45dc-9d05-b5b0a2ee8870" />
+  <img height="300px" alt="confusion_matrix_heatmap" src="https://github.com/user-attachments/assets/f20c0fb4-f1d3-4beb-8e62-38a1f6376bb8" />
+</p>
+
+
+
+
