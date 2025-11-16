@@ -18,6 +18,7 @@ This script downloads source code from public GitHub repositories and builds a s
 - each folder contains `FILES_PER_LANGUAGE = 300` files
 - file naming format **`dataset/{Language}/{Language}_{index}.{ext}`**
 - sizes between `0.5 KB` and `50 KB`
+- uses a **`GITHUB_TOKEN`** for a rate of `1000` requests, instead of normal `50`
   
 ### Download strategy:
 - **`25%`** deterministic: top files from random GitHub search pages  
