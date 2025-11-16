@@ -84,7 +84,23 @@ This script loads the normalized dataset and trains a **Multinomial Naive Bayes 
 
 There are two main ways to use this project.
 
-###  I Full pipeline (download and prepare your own dataset)
+### I Prebuilt dataset and trained model
+The repository already has the normalized dataset `dataset.pkl`, you can skip directly to:    
+**Dependencies:** `joblib` and `scikit-learn`.
+```
+pip install joblib scikit-learn
+```
+**Training** (the model is not in the repository because it has over `100MB`)
+```
+python train_model.py
+```
+**Testing** (`test.txt` will contain code in any of the 14 coding languages)
+```
+python tester.py test.txt
+```
+
+
+###  II Full pipeline (download and prepare your own dataset)
 If you want to **collect new code files or modify the dataset**:
 1. Install dependencies
    ```
@@ -104,13 +120,3 @@ If you want to **collect new code files or modify the dataset**:
    python train_model.py
    ```
 After this, you can test your own code snippets using `tester.py`.
-
-### II Prebuilt dataset and trained model
-If you already have the normalized dataset and trained model, you can skip directly to:
-```
-python tester.py test.txt
-```
-You will need `joblib`.
-```
-pip install joblib
-```
