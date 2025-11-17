@@ -6,9 +6,6 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import joblib
 
-# ----------------------------
-# Load the dataset
-# ----------------------------
 with open("dataset.pkl", "rb") as f:
     dataset = pickle.load(f)
 
@@ -17,9 +14,6 @@ y = [lang for code, lang in dataset]
 
 print(f"Loaded {len(dataset)} code snippets from dataset.pkl")
 
-# ----------------------------
-# Train/Test Split
-# ----------------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
@@ -27,9 +21,6 @@ X_train, X_test, y_train, y_test = train_test_split(
 print(f"Training set: {len(X_train)} samples")
 print(f"Test set: {len(X_test)} samples")
 
-# ----------------------------
-# Tokenization + Vectorization
-# ----------------------------
 def code_tokenizer(code):
     """
     Tokenizes normalized code into identifiers, keywords, operators, and placeholders.
@@ -42,26 +33,17 @@ X_test_vec = vectorizer.transform(X_test)
 
 print(f"Vocabulary size: {len(vectorizer.vocabulary_)} tokens")
 
-# ----------------------------
-# Train Multinomial Naive Bayes
-# ----------------------------
 clf = MultinomialNB(alpha=1.0)
 clf.fit(X_train_vec, y_train)
 
 print("Model training completed!")
 
-# ----------------------------
-# Evaluate
-# ----------------------------
 y_pred = clf.predict(X_test_vec)
 
-print("\n✅ Accuracy:", accuracy_score(y_test, y_pred))
-print("\n✅ Classification Report:\n", classification_report(y_test, y_pred))
-print("\n✅ Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\n Accuracy:", accuracy_score(y_test, y_pred))
+print("\n Classification Report:\n", classification_report(y_test, y_pred))
+print("\n Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
 
-# ----------------------------
-# Save model and vectorizer
-# ----------------------------
 joblib.dump(clf, "mnb_language_model.pkl")
 joblib.dump(vectorizer, "vectorizer.pkl")
 
