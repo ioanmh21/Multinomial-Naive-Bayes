@@ -1,62 +1,31 @@
 import os
 import re
 
-# ==============================
-# Config
-# ==============================
-
-DATASET_DIR = "dataset"          # Path to your GitHub download dataset
-OUTPUT_DIR = "dataset_normalized"  # Where to save normalized files
-SAVE_NORMALIZED_FILES = True     # Save each normalized file as .txt
-
-# ==============================
-# Normalization function
-# ==============================
+DATASET_DIR = "dataset"
+OUTPUT_DIR = "dataset_normalized"
+SAVE_NORMALIZED_FILES = True
 
 def normalize_code(code, lang=None):
-    """
-    Normalize code for all 14 languages.
-    Removes comments, replaces strings/numbers, collapses whitespace.
-    """
-    # --------------------------
-    # Single-line comments
-    # --------------------------
     code = re.sub(r"#.*", "", code)      # Python, Shell
     code = re.sub(r"//.*", "", code)     # C-like: C, C++, C#, Java, JS, TS, Rust
     code = re.sub(r"--.*", "", code)     # SQL, Haskell
     code = re.sub(r";.*", "", code)      # x86 Assembly
 
-    # --------------------------
-    # Multi-line comments
-    # --------------------------
     code = re.sub(r"/\*.*?\*/", "", code, flags=re.DOTALL)      # C-like, CSS, SQL
     code = re.sub(r'"""(.*?)"""', "", code, flags=re.DOTALL)    # Python multi-line
     code = re.sub(r"'''(.*?)'''", "", code, flags=re.DOTALL)    # Python multi-line
     code = re.sub(r"{-.*?-}", "", code, flags=re.DOTALL)        # Haskell multi-line
     code = re.sub(r"<!--.*?-->", "", code, flags=re.DOTALL)    # HTML
 
-    # --------------------------
-    # Replace literals
-    # --------------------------
     code = re.sub(r'".*?"', "STRING", code)     # double-quoted strings
     code = re.sub(r"'.*?'", "STRING", code)     # single-quoted strings
     code = re.sub(r"\b\d+\b", "NUMBER", code)   # numeric literals
-
-    # --------------------------
-    # Collapse whitespace
-    # --------------------------
+    
     code = re.sub(r"\s+", " ", code)
 
     return code.strip()
 
-# ==============================
-# Processing dataset
-# ==============================
-
 def process_language(lang_dir, output_base):
-    """
-    Normalize all files in a language folder.
-    """
     lang_name = os.path.basename(lang_dir)
     output_dir = os.path.join(output_base, lang_name)
     os.makedirs(output_dir, exist_ok=True)
@@ -70,7 +39,7 @@ def process_language(lang_dir, output_base):
             with open(file_path, "r", encoding="utf-8") as f:
                 code = f.read()
         except Exception as e:
-            print(f"⚠️ Skipping {file}: {e}")
+            print(f"Skipping {file}: {e}")
             continue
 
         norm_code = normalize_code(code, lang=lang_name)
@@ -84,10 +53,6 @@ def process_language(lang_dir, output_base):
     print(f"✔ Processed {len(normalized_texts)} files for {lang_name}")
     return normalized_texts
 
-# ==============================
-# Main
-# ==============================
-
 def main():
     all_data = []
 
@@ -99,10 +64,8 @@ def main():
         normalized = process_language(lang_dir, OUTPUT_DIR)
         all_data.extend(normalized)
 
-    print(f"\n🎉 Normalization complete! Total files processed: {len(all_data)}")
+    print(f"\nNormalization complete! Total files processed: {len(all_data)}")
 
-    # `all_data` now contains tuples: (normalized_code, language)
-    # Ready for vectorization and training MNB
     return all_data
 
 if __name__ == "__main__":
