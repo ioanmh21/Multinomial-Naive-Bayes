@@ -4,10 +4,6 @@ import random
 import time
 import re
 
-# ==============================
-# Configuration
-# ==============================
-
 LANGUAGES = {
     "Python": "py",
     "JavaScript": "js",
@@ -25,14 +21,13 @@ LANGUAGES = {
     "TypeScript": "ts",
 }
 
-FILES_PER_LANGUAGE = 300  # Total files per language
+FILES_PER_LANGUAGE = 300
 DETERMINISTIC_RATE = 0.25
 
 OUTPUT_DIR = "dataset"
 MIN_SIZE = 500
 MAX_SIZE = 50_000
 
-# Optional random keywords per language to increase diversity
 RANDOM_KEYWORDS = {
     "Python": ["def", "class", "import", "lambda"],
     "JavaScript": ["function", "const", "let", "class"],
@@ -56,11 +51,6 @@ if not GITHUB_TOKEN:
 
 HEADERS = {"Authorization": f"token {GITHUB_TOKEN}"}
 
-
-# ==============================
-# Helpers
-# ==============================
-
 def search_github_files(ext, keyword=None, page=1):
     q = f"extension:{ext}"
     if keyword:
@@ -69,8 +59,8 @@ def search_github_files(ext, keyword=None, page=1):
     params = {"q": q, "per_page": 100, "page": page}
     resp = requests.get(url, headers=HEADERS, params=params)
 
-    if resp.status_code == 403:  # rate limited
-        print("⚠️ Rate limited — sleeping 10 seconds...")
+    if resp.status_code == 403:
+        print("Rate limited — sleeping 10 seconds...")
         time.sleep(10)
         return []
 
@@ -103,11 +93,6 @@ def download_file(item):
 
     return text
 
-
-# ==============================
-# Main Downloader
-# ==============================
-
 def collect_files(language, ext):
     target_total = FILES_PER_LANGUAGE
     target_det = int(target_total * DETERMINISTIC_RATE)
@@ -128,10 +113,7 @@ def collect_files(language, ext):
 
     keywords = RANDOM_KEYWORDS.get(language, [None])
 
-    # -----------------------------
-    # 25% deterministic: top files from random pages
-    # -----------------------------
-    det_pages = random.sample(range(1, 51), k=10)  # pick 10 random pages for deterministic
+    det_pages = random.sample(range(1, 51), k=10)
     det_files_needed = target_det
     for page in det_pages:
         if det_files_needed <= 0:
@@ -146,10 +128,7 @@ def collect_files(language, ext):
                 collected.append(code)
                 det_files_needed -= 1
         time.sleep(0.3)
-
-    # -----------------------------
-    # 75% randomized: pick random files from many pages
-    # -----------------------------
+        
     rand_attempts = 0
     max_rand_attempts = 500
     while len(collected) < target_total and rand_attempts < max_rand_attempts:
@@ -166,13 +145,9 @@ def collect_files(language, ext):
                 collected.append(code)
         time.sleep(0.3)
 
-    # Shuffle final list to remove ordering bias
     random.shuffle(collected)
 
-    # -----------------------------
-    # Save files
-    # -----------------------------
-    print(f"💾 Saving {len(collected)} files for {language}...")
+    print(f"Saving {len(collected)} files for {language}...")
     for i, code in enumerate(collected):
         filename = os.path.join(lang_dir, f"{language}_{i}.{ext}")
         with open(filename, "w", encoding="utf-8") as f:
@@ -181,14 +156,10 @@ def collect_files(language, ext):
     print(f"✔ {language} complete.")
 
 
-# ==============================
-# Run for all languages
-# ==============================
-
 def main():
     for lang, ext in LANGUAGES.items():
         collect_files(lang, ext)
-    print("\n🎉 Dataset collection complete!")
+    print("\nDataset collection complete!")
 
 
 if __name__ == "__main__":
