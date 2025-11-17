@@ -14,10 +14,8 @@ def load_normalized_dataset(base_dir="dataset_normalized"):
             dataset.append((code, lang))
     return dataset
 
-# Load normalized dataset from .txt files
 dataset = load_normalized_dataset()
 
-# Save it to a pickle file
 with open("dataset.pkl", "wb") as f:
     pickle.dump(dataset, f)
 
