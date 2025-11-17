@@ -2,11 +2,9 @@ import re
 import joblib
 import sys
 
-# IMPORTANT: must be defined BEFORE loading vectorizer
 def code_tokenizer(code):
     return re.findall(r'\b\w+\b|==|!=|<=|>=|->|[\+\-\*/=<>{}()\[\];]', code)
 
-# Load model and vectorizer
 clf = joblib.load("mnb_language_model.pkl")
 vectorizer = joblib.load("vectorizer.pkl")
 
